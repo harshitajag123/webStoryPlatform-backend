@@ -43,10 +43,10 @@ router.post("/register", async (req, res) => {
 		//generate a token
 		const token = jwt.sign({ userID: savedUser._id }, process.env.JWT_SECRET);
 
-		res.status(200).json({
-			message: "User registered successfully",
-			token: token,
-		});
+		 res.status(200).json({
+				message: "success", // Updated message to "success"
+				token: token,
+			});
 	} catch (error) {
 		handleErr(res, error);
 	}
@@ -76,10 +76,10 @@ router.post("/login", async (req, res) => {
 		//if the password matches, generate a token
 		const token = jwt.sign({ userID: existUser._id }, process.env.JWT_SECRET);
 
-		res.status(200).json({
-			message: "Login successful",
-			token: token,
-		});
+		 res.status(200).json({
+				message: "success", // Updated message to "success"
+				token: token,
+			});
 	} catch (error) {
 		handleErr(res, error);
 	}

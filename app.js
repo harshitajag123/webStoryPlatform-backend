@@ -21,8 +21,8 @@ app.use(
 app.use(express.json());
 
 //using routes
-app.use("/api/auth", userRoutes);
-app.use("/api/stories", storyRoutes);
+app.use("/api/auth", userRoutes); //user routes
+app.use("/api/stories", storyRoutes); //story routes
 
 // app.use(errHandler);
 
