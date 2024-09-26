@@ -1,6 +1,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const bycrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 const Joi = require("joi");
 
 const tokenValidator = require("../Middlewares/authMiddleware");
@@ -9,6 +9,16 @@ const Story = require("../Database/Models/Story");
 const User = require("../Database/Models/User");
 
 const router = express.Router(); //story router
+
+// List of allowed categories (same as the frontend)
+// const allowedCategories = [
+// 	"Diet",
+// 	"TechEdu",
+// 	"Fitness",
+// 	"Travel",
+// 	"Movies",
+// 	"All Stories",
+// ];
 
 //validation schema for a story
 const storySchemavalidate = Joi.object({
@@ -226,8 +236,6 @@ router.put("/like/:id", tokenValidator, async (req, res) => {
 		return res.status(500).json({ message: "Internal server error" });
 	}
 });
-
-
 
 // Bookmark a story
 router.put("/bookmark/:id", tokenValidator, async (req, res) => {
@@ -474,6 +482,65 @@ module.exports = router;
 
 // 			res.status(200).json({ message: "Story bookmarked successfully" });
 // 		}
+// 	} catch (error) {
+// 		handleErr(res, error);
+// 	}
+// });
+
+// router.get("/story-by-category", async (req, res) => {
+// 	try {
+// 		const { category, page } = req.query;
+
+// 		// Validate category
+// 		if (!allowedCategories.includes(category)) {
+// 			return res.status(400).json({ message: "Invalid category" });
+// 		}
+
+// 		const categoryRegex = new RegExp(category, "i");
+// 		const query = {
+// 			"slides.category": categoryRegex,
+// 		};
+
+// 		const totalstories = await Story.countDocuments(query);
+// 		const stories = await Story.find(query).limit(page * 4);
+// 		const storiesRemaining = totalstories - page * 4;
+
+// 		let storiesWithEditAccess = stories.map((story) => ({
+// 			...story.toObject(),
+// 		}));
+
+// 		// Use the 'authorization' header instead of 'token'
+// 		const authHeader = req.headers.authorization;
+// 		if (authHeader && authHeader.startsWith("Bearer ")) {
+// 			const token = authHeader.split(" ")[1]; // Extract the token from the header
+// 			const decode = jwt.verify(token, process.env.JWT_SECRET);
+
+// 			if (!decode || !decode.userID) {
+// 				return res.status(401).json({ message: "Token not valid" });
+// 			}
+
+// 			const user = await User.findById(decode.userID);
+// 			if (!user) {
+// 				return res.status(404).json({ message: "User not found" });
+// 			}
+
+// 			storiesWithEditAccess = stories.map((story) => {
+// 				const editable = story.ownedBy.toString() === user._id.toString();
+// 				const bookmark = story.bookmarks.includes(user._id.toString());
+// 				const liked = story.likes.includes(user._id.toString());
+// 				return {
+// 					...story.toObject(),
+// 					editable: editable,
+// 					bookmark: bookmark,
+// 					liked: liked,
+// 				};
+// 			});
+// 		}
+
+// 		res.json({
+// 			stories: storiesWithEditAccess,
+// 			remainingStories: Math.max(storiesRemaining, 0),
+// 		});
 // 	} catch (error) {
 // 		handleErr(res, error);
 // 	}
