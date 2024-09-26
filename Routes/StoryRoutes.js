@@ -41,6 +41,7 @@ const storySchemavalidate = Joi.object({
 //get story by categories --done
 router.get("/story-by-category", async (req, res) => {
 	try {
+		console.log(req.query); // Debugging: Check if query params are correct
 		const { category, page } = req.query;
 		const categoryRegex = new RegExp(category, "i");
 		const query = {
@@ -88,6 +89,7 @@ router.get("/story-by-category", async (req, res) => {
 			remainingStories: Math.max(storiesRemaining, 0),
 		});
 	} catch (error) {
+		console.error("Error fetching stories by category:", error);
 		handleErr(res, error);
 	}
 });
